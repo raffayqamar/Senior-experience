@@ -1,0 +1,16 @@
+.App {
+  text-align: center;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Sidebar */
+.sidebar-wrapper {
+  height: 100%;
+}
+.sidebar-component-wrapper {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+}

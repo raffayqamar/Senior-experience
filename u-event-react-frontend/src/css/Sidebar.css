@@ -1,0 +1,261 @@
+:root {
+  --font-family: System-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  /* --primary-brand-color: #ac4bf9; */
+  --primary-brand-color: linear-gradient(
+    180deg,
+    rgba(172, 75, 249, 0.9) 0%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  --primary-transition: all 0.2s ease-in-out;
+  --primary-white: #ffffff;
+  --primary-black: #000000;
+  --secondary-brand-color: #c9c9c9;
+  --invert-colors: invert(1);
+}
+
+a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.sidebar {
+  font-family: var(--font-family);
+  background: var(--primary-brand-color);
+  border-radius: 0px 10px 10px 0px;
+
+  color: var(--primary-white);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  min-width: 300px;
+  height: 90vh;
+  transition: var(--primary-transition);
+  position: relative;
+  z-index: inherit;
+  overflow: hidden;
+}
+
+.sidebar-logo {
+  font-size: 50px;
+  font-weight: 800;
+  margin-top: 1rem;
+  opacity: 1;
+}
+
+.sidebar-sub-text {
+  color: #000;
+  font-size: 24px;
+  font-weight: 900;
+  text-align: left;
+}
+
+.sidebar-interests {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.sidebar-interests .pill {
+  background: #000;
+  color: var(--primary-white);
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  margin: 0.5rem 0.5rem 0 0;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav-section,
+.hosted-section {
+  /* background: blue; */
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  gap: 1rem;
+}
+.nav-section::before,
+.hosted-section::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: #000;
+  opacity: 0.2;
+  margin-bottom: 1rem;
+}
+
+.hosted-section .pill.nav,
+.nav-section .pill.nav {
+  background: none;
+
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--primary-white);
+}
+
+.sidebar-icon-container {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  font-size: 9px;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 0.8rem;
+  /* CHange the color of black image to white */
+  filter: var(--invert-colors);
+}
+
+.hosted-section .pill.nav,
+.nav-section .pill.nav,
+.pill {
+  transition: all 0.2s ease-in-out;
+  font-weight: 800;
+  font-size: 20px;
+  text-align: left;
+}
+
+.sidebar-interests .pill:hover {
+  transform: scale(1.05);
+}
+
+.nav.pill:hover {
+  transform: scale(1.05);
+}
+
+.nav-section .text,
+.hosted-section .text {
+  text-align: left;
+  padding-bottom: 1rem;
+  font-weight: 600;
+}
+
+/* Create Event */
+.create-event {
+  /* filter: var(--invert-colors); */
+  cursor: pointer;
+  display: inline-block;
+  margin: auto;
+  flex-direction: column;
+  transition: all 0.25s ease-in-out;
+}
+
+.create-event-text {
+  font-size: 12px;
+  font-weight: 800;
+  transition: all 0.25s ease-in-out;
+  margin-top: -5px;
+}
+.create-event-btn {
+  max-width: 50px;
+  border-radius: 50%;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 800;
+  transition: all 0.25s ease-in-out;
+  cursor: pointer;
+  filter: invert(1);
+  animation: grow 3s ease-in-out infinite;
+}
+
+/* .create-event:hover {
+  transform: rotate(180deg) !important;
+} */
+@keyframes grow {
+  0% {
+    transform: scale(0.98);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(0.98);
+  }
+}
+
+.create-event:hover .create-event-text {
+  font-weight: 800;
+}
+
+.link-text {
+  color: #000;
+  font-weight: 900;
+}
+
+/* Hide Sidebar Styling Click Event in React To Add Class */
+.sidebar .hosted-section {
+  padding: 0;
+}
+.sidebar .hide-sidebar-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 1rem;
+  border-radius: 0px 0px 0px 10px;
+  transition: var(--primary-transition);
+
+  /* Temp Remove Button */
+  display: none;
+}
+.sidebar-wrapper.hide {
+  margin-right: 3rem;
+  width: 50px;
+  z-index: 100;
+}
+.sidebar-component-wrapper {
+  width: 0;
+}
+
+/* HIDE ELEMENTS ON COLLAPSE */
+.sidebar.hide .sidebar-logo {
+  font-size: 35px;
+  margin-bottom: 1rem;
+}
+
+.sidebar.hide .nav-section .nav.pill {
+  width: auto;
+  margin: auto;
+  margin-top: 1rem;
+}
+.sidebar.hide .create-event-btn {
+  max-width: 40px;
+  margin: 1rem 0;
+}
+
+.sidebar.hide .link-text {
+  /* opacity: 0;
+  display: none; */
+}
+.sidebar.hide p.create-event-text {
+  /* opacity: 0;
+  display: none; */
+}
+.sidebar.hide .sidebar-interests {
+  opacity: 0;
+  display: none;
+}
+.sidebar.hide .sidebar-sub-text {
+  opacity: 0;
+  display: none;
+  font-size: 16px;
+}
+.sidebar.hide {
+  background: var(--primary-brand-color);
+  min-width: 100px;
+}
+
+.sidebar .hide-sidebar-btn.hide {
+  position: absolute;
+  right: 0;
+  padding: 1rem;
+  border-radius: 0px;
+  top: 0;
+  transition: var(--primary-transition);
+}
