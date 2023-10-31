@@ -30,12 +30,12 @@ public class Event {
     @Column(name = "event_name")
     private String eventName;
 
-    @Column(name = "email")
+    @Column(name = "username")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String email;
+    private String username;
 
     @ManyToOne()
-    @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false)
+    @JoinColumn(name = "username", referencedColumnName = "username", insertable = false, updatable = false)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private User user;
 

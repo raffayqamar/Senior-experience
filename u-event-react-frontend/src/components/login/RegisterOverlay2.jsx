@@ -1,19 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 
-const RegistrationOverlay2 = ({onClose, onRegisterEmail}) => {
-  
+const RegistrationOverlay2 = ({ onClose, onRegisterEmail }) => {
   const [notification, setNotification] = useState(false);
   const [notificationText, setNotificationText] = useState("");
 
+  // For the redirect link after account creation
+  const linkRef = useRef();
+
   /************************************************* */
-  
 
   const [createForm, setCreateForm] = useState({
     firstName: "",
     lastName: "",
-    email: "",
+    username: "",
     password: "",
     passwordConfirm: "",
+    role: "USER",
+    provider: "LOCAL",
   });
 
   const showNotification = () => {
@@ -53,12 +57,12 @@ const RegistrationOverlay2 = ({onClose, onRegisterEmail}) => {
     const formData = new FormData();
 
     // Create an object of the form fields
-    const { firstName, lastName, email, password } = createForm;
+    const { firstName, lastName, username, password } = createForm;
 
     // Update the formData object
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
-    formData.append("email", email);
+    formData.append("username", username);
     formData.append("password", password);
 
     console.log(formData);
@@ -76,7 +80,9 @@ const RegistrationOverlay2 = ({onClose, onRegisterEmail}) => {
           // The request was successful, you can handle the response here
           console.log("User created successfully");
           alert("Account Created");
-          // Reset the form or navigate to a different page
+
+          // Navigate to the close the overlay
+          closeOverlay();
         } else {
           // The request failed, handle the error here
           console.error("Failed to create user");
@@ -98,19 +104,6 @@ const RegistrationOverlay2 = ({onClose, onRegisterEmail}) => {
 
   return (
     <div className="overlay2">
-      <div className="create-close-btn-container">
-        <button
-          className="overlay-close-button"
-          data-testid="close-overlay-button"
-          onClick={onClose}
-        >
-          {/* 
-                // The following line is a unicode character for the multiplication sign
-                 */}
-          {"\u00D7"}
-        </button>
-      </div>
-
       <div className="overlay2-content">
         <form
           className="overlay2-form"
@@ -118,6 +111,19 @@ const RegistrationOverlay2 = ({onClose, onRegisterEmail}) => {
             handleSubmit(e);
           }}
         >
+          <div className="create-close-btn-container">
+            <button
+              className="overlay-close-button"
+              data-testid="close-overlay-button"
+              onClick={onClose}
+            >
+              {/*
+                    // The following line is a unicode character for the multiplication sign
+                    */}
+              {"\u00D7"}
+            </button>
+          </div>
+
           <div className="create-close-btn-container">
             {/* <button className="overlay-back-button"> back </button>
             <button className="overlay-close-button" onClick={onClose}>
@@ -134,7 +140,10 @@ const RegistrationOverlay2 = ({onClose, onRegisterEmail}) => {
               name="firstName"
               placeholder="First Name"
               required
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                localStorage.setItem("firstName", e.target.value);
+              }}
             />
             <label htmlFor="lastName"> Last Name </label>
             <input
@@ -143,16 +152,22 @@ const RegistrationOverlay2 = ({onClose, onRegisterEmail}) => {
               name="lastName"
               placeholder="Last Name"
               required
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                localStorage.setItem("lastName", e.target.value);
+              }}
             />
             <label htmlFor="email"> E-mail </label>
             <input
               type="text"
               id="email"
-              name="email"
+              name="username"
               placeholder="E-mail"
               required
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                localStorage.setItem("username", e.target.value);
+              }}
             />
             <label htmlFor="password"> Password </label>
             <input
@@ -185,10 +200,12 @@ const RegistrationOverlay2 = ({onClose, onRegisterEmail}) => {
             </button>
           </div>
         </form>
+        {/* Redirect Link After Account Creation */}
+        <Link to="/account" ref={linkRef} style={{ display: "none" }}></Link>
+        {/* End of Redirect Link After Account Creation */}
       </div>
     </div>
   );
 };
-
 
 export default RegistrationOverlay2;

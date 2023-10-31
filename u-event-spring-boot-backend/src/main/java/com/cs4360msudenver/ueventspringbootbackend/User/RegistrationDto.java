@@ -1,17 +1,17 @@
 package com.cs4360msudenver.ueventspringbootbackend.User;
 
 public class RegistrationDto {
-    private String email;
+    private String username;
     private String password;
     private String firstName;
     private String lastName;
 
     public String getEmail() {
-        return email;
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

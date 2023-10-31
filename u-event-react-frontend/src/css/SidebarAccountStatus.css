@@ -36,9 +36,9 @@
 }
 
 /* HIDE ELEMENTS ON COLLAPED SIDEBAR */
-.sidebar.hide .sidebar-account-status-name {
+.sidebar .sidebar-account-status-name {
   display: none;
 }
-.sidebar.hide .sidebar-account-status-container {
+.sidebar .sidebar-account-status-container {
   outline: none;
 }

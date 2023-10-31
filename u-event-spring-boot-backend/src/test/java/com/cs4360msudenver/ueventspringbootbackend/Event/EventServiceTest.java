@@ -1,6 +1,7 @@
 package com.cs4360msudenver.ueventspringbootbackend.Event;
 
 import com.cs4360msudenver.ueventspringbootbackend.User.CustomUserDetailsService;
+import com.cs4360msudenver.ueventspringbootbackend.User.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EventServiceTest {
 
     @MockBean
-    private CustomUserDetailsService customUserDetailsService;
-
-    @MockBean
     private EventRepository eventRepository;
 
     @MockBean
@@ -32,6 +31,13 @@ public class EventServiceTest {
 
     @MockBean
     private EntityManager entityManager;
+
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
+
+    @MockBean
+    private JwtUtil jwtUtil;
+
 
     @Autowired
     private EventService eventService;

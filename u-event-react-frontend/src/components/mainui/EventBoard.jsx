@@ -11,8 +11,11 @@ import feedIcon from "../../assets/feed-icon.svg";
 const EventBoard = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [backBtn, setBackBtn] = useState(false);
-
   const [data, setData] = useState([]);
+  const [filter, setFilter] = useState("all");
+  const [filteredData, setFilteredData] = useState([]);
+
+  // TODO-Complete: Fetch events from the backend
   useEffect(() => {
     // fetch data from the backend
     fetch("http://localhost:8080/api/events")
@@ -22,6 +25,10 @@ const EventBoard = () => {
       });
   }, []);
 
+  useEffect(() => {
+    setFilteredData(filterData(filter));
+  }, [filter, data]);
+
   const handleEventClick = (event) => {
     setSelectedEvent(event);
   };
@@ -30,8 +37,26 @@ const EventBoard = () => {
     setBackBtn(!backBtn);
   };
 
+  const handleFilterChange = (e) => {
+    const filter = e.target.value;
+    setFilter(filter);
+  };
+
+  const filterData = (filter) => {
+    const filteredData = data.filter((event) => {
+      return event.category === filter;
+    });
+    return filteredData;
+  };
+
   return (
     <section className="event-board">
+      <p className="welcome-text">{`Welcome back ${
+        // data[0] ? data[0].user.firstName : "User"
+        localStorage.getItem("firstName")
+          ? localStorage.getItem("firstName")
+          : "User"
+      }!`}</p>
       <img src={rectImageOne} className="bg-rec-image" alt="rectimage" />
       <img src={feedIcon} className="feed-icon" alt="feedicon" />
       <div className="event-board-top">
@@ -42,12 +67,19 @@ const EventBoard = () => {
           </Link>
 
           <div className="event-board-filter">
+            {/* Filter Feature */}
             <p>Filter By</p>
-            <select className="event-board-filter">
-              <option value="today">Meeting Time</option>
-              <option value="week">Host</option>
-              <option value="month">Location</option>
-              <option value="year">Duration</option>
+            <select
+              className="event-board-filter"
+              onChange={handleFilterChange}
+            >
+              <option value="all">All</option>
+              <option value="concert">Concert</option>
+              <option value="sports">Sports</option>
+              <option value="food">Food</option>
+              <option value="outdoors">Outdoors</option>
+              <option value="games">Games</option>
+              <option value="other">Other</option>
             </select>
           </div>
         </div>
@@ -56,7 +88,6 @@ const EventBoard = () => {
         <div
           className="event-details-content"
           style={{
-            // backgroundImage: `linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,.5)), url(${selectedEvent.image})`,
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center center",
             backgroundSize: "cover",
@@ -74,28 +105,40 @@ const EventBoard = () => {
               setSelectedEvent(null);
             }}
           >
-            {/* This will allow the user to navigate back to the event board */}
             {"\u2190 Event Board"}
           </button>
           <EventDetails {...selectedEvent} />
         </div>
       ) : (
-        // show the event list here when the event is not selected
         <div className="event-board-top">
           <div className="event-board-events">
-            {data.map((event) => {
-              return (
-                <div
-                  className="event-board-event"
-                  key={event.eventId}
-                  onClick={() => handleEventClick(event)}
-                >
-                  <div className="zoom-effect">
-                    <EventCard {...event} height={600} />
-                  </div>
-                </div>
-              );
-            })}
+            {filter === "all"
+              ? data.map((event) => {
+                  return (
+                    <div
+                      className="event-board-event"
+                      key={event.eventId}
+                      onClick={() => handleEventClick(event)}
+                    >
+                      <div className="zoom-effect">
+                        <EventCard {...event} height={600} />
+                      </div>
+                    </div>
+                  );
+                })
+              : filteredData.map((event) => {
+                  return (
+                    <div
+                      className="event-board-event"
+                      key={event.eventId}
+                      onClick={() => handleEventClick(event)}
+                    >
+                      <div className="zoom-effect">
+                        <EventCard {...event} height={600} />
+                      </div>
+                    </div>
+                  );
+                })}
           </div>
         </div>
       )}

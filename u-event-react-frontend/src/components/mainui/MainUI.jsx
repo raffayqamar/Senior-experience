@@ -1,7 +1,6 @@
 import React from "react";
 import EventBoard from "./EventBoard";
 import "../../css/MainUI.css";
-import rectImageOne from "../../assets/right-rect-1.svg";
 
 const MainUI = () => {
   return (

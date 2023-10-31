@@ -68,24 +68,3 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-
-```
-Fontawesome icons used in the project are from https://fontawesome.com/icons?d=gallery&p=2&m=free
-npm install --save @fortawesome/react-fontawesome
-npm install --save @fortawesome/fontawesome-svg-core
-npm install --save @fortawesome/free-solid-svg-icons
-# If you want brands and regular icons, you can also install the following:
-npm install --save @fortawesome/free-brands-svg-icons
-npm install --save @fortawesome/free-regular-svg-icons
-```
-
-````import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCoffee } from '@fortawesome/free-solid-svg-icons';
-
-const MyComponent = () => {
-return <FontAwesomeIcon icon={faCoffee} />;
-};
-
-export default MyComponent;```
-````

@@ -1,89 +1,156 @@
-//package com.cs4360msudenver.ueventspringbootbackend.UserService;
-//
-//import User.User;
-//import User.UserRepository;
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertTrue;
-//import static org.mockito.Mockito.*;
-//
-//public class UserServiceTest {
-//
-//    private UserService userService;
-//
-//    @Mock
-//    private UserRepository userRepository;
-//
-//    @BeforeEach
-//    public void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//        userService = new UserService(userRepository);
-//    }
-//
-//    @Test
-//    public void testCreateUser() {
-//        // Create a user
-//        User user = new User();
-//        user.setUsername("user");
-//
-//        // Mock the userRepository.save() method
-//        when(userRepository.save(user)).thenReturn(user);
-//
-//        // Call the createUser method
-//        User createdUser = userService.createUser(user);
-//
-//        // Verify that userRepository.save() was called with the user
-//        verify(userRepository, times(1)).save(user);
-//
-//
-//    }
-//
-//    @Test
-//    public void testGetAllUsers() {
-//        // Create a list of users for testing
-//        List<User> userList = new ArrayList<>();
-//        assertTrue(userList.add(new User("user1"))); // Changed from Assertions.assertTrue
-//        userList.add(new User("user2"));
-//
-//        // Mock the userRepository.findAll() method
-//        when(userRepository.findAll()).thenReturn(userList);
-//
-//        // Call the getAllUsers method
-//        Iterable<User> users = userService.getAllUsers();
-//
-//        // Verify that userRepository.findAll() was called
-//        verify(userRepository, times(1)).findAll();
-//
-//        // Assert that the returned users match the test data
-//        assertEquals(2, ((List<User>) users).size());
-//    }
-//
-//    @Test
-//    public void testGetUserById() {
-//        // Create a user with a known ID
-//        Long userId = 1L;
-//        User user = new User("user");
-//        user.setId(userId);
-//
-//        // Mock the userRepository.findById() method
-//        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-//
-//        // Call the getUserById method
-//        Optional<User> foundUser = userService.getUserById(userId);
-//
-//        // Verify that userRepository.findById() was called with the ID
-//        verify(userRepository, times(1)).findById(userId);
-//
-//        // Assert that the found user matches the test data
-//        assertEquals(userId, foundUser.get().getId());
-//    }
-//}
+package com.cs4360msudenver.ueventspringbootbackend.User;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(value = UserService.class)
+public class UserServiceTest {
+
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
+
+    @MockBean
+    private EntityManagerFactory entityManagerFactory;
+
+    @MockBean
+    private EntityManager entityManager;
+
+    @MockBean
+    private UserRepository userRepository;
+
+    @MockBean
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private UserService userService;
+
+    @BeforeEach
+    public void setup() {
+        userService.entityManager = entityManager;
+    }
+
+    @Test
+    public void testGetUsers() {
+        Long userId = 1L;
+        User expectedUser = new User();
+        expectedUser.setUserId(userId);
+        expectedUser.setFirstName("testFirstName");
+        expectedUser.setLastName("testLastName");
+
+        when(userRepository.findAll()).thenReturn(List.of(expectedUser));
+
+        List<User> users = userService.getUsers();
+        assertEquals(1, users.size());
+        assertEquals("testFirstName", users.get(0).getFirstName());
+    }
+
+    @Test
+    public void testGetUser() {
+        Long userId = 1L;
+        User expectedUser = new User();
+        expectedUser.setUserId(userId);
+        expectedUser.setFirstName("testFirstName");
+        expectedUser.setLastName("testLastName");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(expectedUser));
+
+        User actualUser = userService.getUser(userId);
+
+        assertNotNull(actualUser);
+        assertEquals(expectedUser.getUserId(), actualUser.getUserId());
+        assertEquals(expectedUser.getFirstName(), actualUser.getFirstName());
+        assertEquals(expectedUser.getLastName(), actualUser.getLastName());
+    }
+
+
+    @Test
+    public void testGetUserNotFound() {
+        Long userId = 1L;
+        User expectedUser = new User();
+        expectedUser.setUserId(userId);
+        expectedUser.setFirstName("testFirstName");
+        expectedUser.setLastName("testLastName");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        User actualUser = userService.getUser(userId);
+
+        assertNull(actualUser);
+    }
+
+    @Test
+    public void testSaveUser() {
+        Long userId = 1L;
+        User expectedUser = new User();
+        expectedUser.setUserId(userId);
+        expectedUser.setFirstName("testFirstName");
+        expectedUser.setLastName("testLastName");
+
+        when(userRepository.saveAndFlush(Mockito.any())).thenReturn(expectedUser);
+        when(userRepository.save(Mockito.any())).thenReturn(expectedUser);
+
+        assertEquals(expectedUser, userService.saveUser(expectedUser));
+    }
+
+    @Test
+    public void testSaveUserError() {
+        Long userId = 1L;
+        User expectedUser = new User();
+        expectedUser.setUserId(userId);
+        expectedUser.setFirstName("testFirstName");
+        expectedUser.setLastName("testLastName");
+
+        when(userRepository.save(Mockito.any())).thenThrow(IllegalArgumentException.class);
+        when(userRepository.saveAndFlush(Mockito.any())).thenThrow(IllegalArgumentException.class);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.saveUser(expectedUser);
+        });
+
+        assertNull(exception.getMessage());
+    }
+
+    @Test
+    public void testDeleteUser() {
+        Long userId = 1L;
+        User expectedUser = new User();
+        expectedUser.setUserId(userId);
+        expectedUser.setFirstName("testFirstName");
+        expectedUser.setLastName("testLastName");
+
+
+        when(userRepository.existsById(userId)).thenReturn(true);
+        doNothing().when(userRepository).deleteById(userId);
+
+        boolean isDeleted = userService.deleteUser(userId);
+
+        assertTrue(isDeleted);
+        verify(userRepository).deleteById(userId);
+    }
+
+    @Test
+    public void testDeleteUserNotFound() {
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(Optional.empty());
+        Mockito.when(userRepository.existsById(Mockito.any())).thenReturn(false);
+        Mockito.doThrow(IllegalArgumentException.class)
+                .when(userRepository)
+                .deleteById(Mockito.any());
+
+        assertFalse(userService.deleteUser(1L));
+    }
+}

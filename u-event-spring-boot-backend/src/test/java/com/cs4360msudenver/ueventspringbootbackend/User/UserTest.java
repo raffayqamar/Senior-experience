@@ -1,45 +1,33 @@
-////I used copilot and chatgpt to help me write this test file
-//
-//
-//package com.cs4360msudenver.ueventspringbootbackend.User;
+//package com.cs4360msudenver.ueventspringbootbackend.UserModel;
 //
 //import org.junit.jupiter.api.Test;
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.core.authority.SimpleGrantedAuthority;
-//
-//import java.util.Collection;
-//
-//import static com.cs4360msudenver.ueventspringbootbackend.User.ProviderEnum.*;
-//import static org.junit.jupiter.api.Assertions.*;
+//import static org.junit.jupiter.api.Assertions.assertEquals;
 //
 //class UserTest {
 //
 //    @Test
-//    void noArgsConstructorTest() {
-//        User user = new User();
-//        assertNull(user.getUsername());
-//        assertNull(user.getProvider());
-//    }
+//    void testUserConstructorAndAccessors() {
 //
-//    @Test
-//    void allArgsConstructorTest() {
-//        User user = new User("test@email.com", "John", "Doe", "password", GOOGLE);
-//        assertEquals("test@email.com", user.getUsername());
-//        assertEquals(GOOGLE, user.getProvider());
-//    }
+//        User user = new User(1L, "John", "Doe", "john@example.com", "password");
 //
-//    @Test
-//    void getAuthoritiesTest() {
-//        User user = new User();
-//        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-//        assertEquals(1, authorities.size());
-//        assertTrue(authorities.contains(new SimpleGrantedAuthority("USER")));
-//    }
+//        // Test getter methods
+//        assertEquals(1L, user.getId());
+//        assertEquals("John", user.getFirstName());
+//        assertEquals("Doe", user.getLastName());
+//        assertEquals("john@example.com", user.getEmail());
+//        assertEquals("password", user.getPassword());
 //
-//    @Test
-//    void getUsernameTest() {
-//        User user = new User();
-//        user.setEmail("test@email.com");
-//        assertEquals(user.getEmail(), user.getUsername());
+//        // Test setter methods
+//        user.setId(2L);
+//        user.setFirstName("Jane");
+//        user.setLastName("Smith");
+//        user.setEmail("jane@example.com");
+//        user.setPassword("password");
+//
+//        assertEquals(2L, user.getId());
+//        assertEquals("Jane", user.getFirstName());
+//        assertEquals("Smith", user.getLastName());
+//        assertEquals("jane@example.com", user.getEmail());
+//        assertEquals("password", user.getPassword());
 //    }
 //}

@@ -73,6 +73,7 @@
 .user-profile-card-body-content-image img {
   max-width: 120px; /* Adjust as needed */
   border-radius: 50%;
+  position: relative;
 }
 
 .add-profile-picture-button {
@@ -235,4 +236,57 @@
   .events-card {
     padding-bottom: 2rem;
   }
+}
+
+/* User Image */
+.image-profile-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.user-profile-image {
+}
+.close-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffff;
+  border-radius: 50px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 24px;
+  opacity: 0;
+  transition: var(--base-transition); /* Smooth expand/collapse animation */
+}
+/* hover over profile image and move icon to top: 0 */
+.image-profile-container:hover .close-icon {
+  top: -5px;
+  background: #000;
+  /* Rotate 180deg */
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  z-index: 200;
+}
+.close-icon:hover {
+  transform: translate(-50%, -50%) rotate(-180deg) !important;
+  background: red !important;
+  opacity: 1;
+}
+
+.logout-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.logout-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }

@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import RegistrationOverlay2 from "./RegisterOverlay2";
 import "../../css/Login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 import {
   faApple,
   faFacebook,
@@ -13,7 +12,7 @@ import {
 import loginimage from "../../assets/ugur-arpaci-U18V0ToioFU-unsplash.jpg";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const linkRef = useRef();
@@ -21,7 +20,7 @@ const Login = () => {
   const [createForm, setCreateForm] = useState({
     firstName: "",
     lastName: "",
-    email: "",
+    username: "",
     password: "",
     passwordConfirm: "",
   });
@@ -35,10 +34,81 @@ const Login = () => {
     console.log(createForm);
   };
 
-  const handleSubmit = () => {
-    console.log(email);
+  // handle Login
 
-    linkRef.current.click();
+  // "http://localhost:8080/api/users/login"
+
+  // const handleLogin = (e) => {
+  //   e.preventDefault();
+
+  //   const { username, password } = this.state;
+  //   //send login data to backend using fetchAPI
+  //   fetch("http://localhost:8080/api/users/login", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ username, password }),
+  //   })
+  //     .then((response) => {
+  //       if (response.ok) {
+  //         // The request was successful, you can handle the response here
+  //         console.log("Event created successfully");
+  //         // Reset the form or navigate to a different page
+  //       } else {
+  //         // The request failed, handle the error here
+  //         console.error("Failed to create event");
+  //         // Display an error message or handle the error as needed
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //       // Handle any network errors here
+  //     });
+  // };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Create a FormData object
+    const formData = new FormData();
+
+    // Create an object of the form fields
+    const { ...formDataFields } = createForm;
+
+    for (const key in formDataFields) {
+      formData.append(key, formDataFields[key]);
+    }
+
+    console.log("formData: ", formData);
+    console.log(createForm);
+
+    // Make a POST request to your backend endpoint
+    fetch("http://localhost:8080/api/users/login", {
+      method: "POST",
+      body: JSON.stringify(createForm),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          // The request was successful, you can handle the response here
+          console.log("Logged In successfully");
+          // Reset the form or navigate to a different page
+          linkRef.current.click();
+          // Show the JWT token in the console
+          console.log("JWT: ", response.headers.get("Authorization"));
+        } else {
+          // The request failed, handle the error here
+          console.error("Failed to log user in");
+          // Display an error message or handle the error as needed
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // Handle any network errors here
+      });
   };
 
   // Create state to track whether overlay[Modal] is open or not
@@ -57,7 +127,7 @@ const Login = () => {
   return (
     <div className="login-div">
       <div className="show-overlay-container">
-        {/* 
+        {/*
             // Boolean expression to check if overlay is open or not
         */}
         {isOverlayOpen && (
@@ -71,9 +141,7 @@ const Login = () => {
             <form
               className="login-form"
               data-testid="login-form"
-              onSubmit={(e) => {
-                handleSubmit(e);
-              }}
+              onSubmit={handleSubmit}
             >
               <h2 className="brand-logo">U-Event</h2>
               <label htmlFor="email"> E-mail </label>
@@ -81,9 +149,15 @@ const Login = () => {
                 type="text"
                 id="email"
                 data-testid="email"
-                name="email"
+                name="username"
                 required
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  localStorage.setItem("username", e.target.value);
+                  // Reset firstName and lastName from localStorage
+                  localStorage.removeItem("firstName");
+                  localStorage.removeItem("lastName");
+                }}
               />
               <label htmlFor="password"> Password </label>
               <input
@@ -157,7 +231,7 @@ const Login = () => {
       </div>
 
       <div>
-        {email}
+        {username}
         {password}
       </div>
     </div>

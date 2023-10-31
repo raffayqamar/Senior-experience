@@ -1,9 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import "../../css/CreateEvent.css";
+import "../../css/EventCard.css";
 import EventCard from "../../components/mainui/EventCard";
 import rectImageOne from "../../assets/right-rect-1.svg";
 
+// Notification component
+import Notification from "../notification/Notification";
+
 const CreateEvent = () => {
+  // Set the status of 200 or 400 for the notification
+  const [responseStatus, setResponse] = useState("");
+  const [showNotification, setShowNotification] = useState(false);
+
+  const linkRef = useRef();
+
+  useEffect(() => {
+    if (showNotification) {
+      const notificationTimeout = setTimeout(() => {
+        setShowNotification(false);
+      }, 1000); // 1 second
+
+      return () => {
+        clearTimeout(notificationTimeout);
+      };
+    }
+  }, [showNotification]);
+
   const [data, setData] = useState([]);
   useEffect(() => {
     // fetch data from the backend
@@ -16,9 +39,9 @@ const CreateEvent = () => {
 
   // GET FROM API ONCE AUTHENTICATION IS SET UP
   const user = {
-    email: "will05@email.com",
-    firstName: "William",
-    lastName: "Hellems-Moody",
+    username: `${localStorage.getItem("username")}`,
+    firstName: "",
+    lastName: "",
   };
 
   const [notification, setNotification] = useState(false);
@@ -28,7 +51,7 @@ const CreateEvent = () => {
 
   const [createForm, setCreateForm] = useState({
     eventName: "",
-    email: "will05@email.com",
+    username: `${localStorage.getItem("username")}`,
     eventDate: "",
     eventTime: "",
     location: "",
@@ -50,7 +73,7 @@ const CreateEvent = () => {
     });
   };
 
-  const showNotification = () => {
+  const showAlert = () => {
     if (formReadyToSubmit) {
       setNotification(true);
       setTimeout(() => {
@@ -65,6 +88,12 @@ const CreateEvent = () => {
       [e.target.name]: e.target.value,
     });
     console.log(createForm);
+    // if for is empty, disable the submit button
+    if (e.target.value === "") {
+      setFormReadyToSubmit(false);
+    } else {
+      setFormReadyToSubmit(true);
+    }
   };
 
   const [formReadyToSubmit, setFormReadyToSubmit] = useState(false);
@@ -85,6 +114,8 @@ const CreateEvent = () => {
   const handleUploadImage = () => {
     fileInputRef.current.click();
   };
+
+  const [resText, setResText] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -116,10 +147,17 @@ const CreateEvent = () => {
         if (response.ok) {
           // The request was successful, you can handle the response here
           console.log("Event created successfully");
+          setResponse("Event created successfully");
+          // Show the notification
+          setShowNotification(true);
+          linkRef.current.click(); // Redirect to home page
           // Reset the form or navigate to a different page
         } else {
           // The request failed, handle the error here
           console.error("Failed to create event");
+          setResponse("Failed to create event");
+          // Show the notification
+          setShowNotification(true);
           // Display an error message or handle the error as needed
         }
       })
@@ -128,11 +166,19 @@ const CreateEvent = () => {
         // Handle any network errors here
       });
   };
-
   return (
     <section className="create-event-component">
-      {/* rect image */}
-      <img src={rectImageOne} className="bg-rec-image" alt="rect-image" />
+      {/* Display the notification for 1 second then hide */}
+      {showNotification && (
+        <Notification
+          resText={responseStatus}
+          setShowNotification={setShowNotification}
+        />
+      )}
+      <Link to="/" ref={linkRef} style={{ display: "none" }}></Link>
+
+      <img src={rectImageOne} className="bg-rec-image" alt="rect_image" />
+
       <h1 className="create-event-header">Create Event</h1>
 
       <div className="create-event-container">
@@ -150,7 +196,7 @@ const CreateEvent = () => {
             />
             {/* Upload image file */}
             <div className="upload-image-container">
-              {/* <input
+              <input
                 type="file"
                 name="imageFile"
                 id="event-image-file"
@@ -158,17 +204,28 @@ const CreateEvent = () => {
                 onChange={handleFileChange}
                 ref={fileInputRef}
                 style={{ display: "none" }}
-              /> */}
-              {/* <label htmlFor="event-image-file" className="file-upload-label">
+              />
+              <label
+                htmlFor="event-image-file"
+                className="file-upload-label"
+                style={{
+                  cursor: "pointer",
+                  border: "1px solid black",
+                  padding: "0.2rem 1rem",
+                  marginTop: "0.5rem",
+                  borderRadius: "10px",
+                }}
+              >
                 Upload
-              </label> */}
-              {/* <button
+              </label>
+              <button
+                style={{ display: "none", cursor: "pointer" }}
                 className="upload-image-btn"
                 onClick={handleUploadImage}
                 type="button"
               >
                 Upload
-              </button> */}
+              </button>
             </div>
           </div>
           <div className="form-block">
@@ -289,9 +346,10 @@ const CreateEvent = () => {
                     appendTags(e.target.value);
                     e.target.value = "";
                   }
+                  console.log("tags: ", createForm.tags);
                 } else if (createForm.tags.length === 4) {
                   setNotificationText("Only 4 tags allowed");
-                  showNotification();
+                  showAlert();
                 }
               }}
             />
@@ -308,7 +366,7 @@ const CreateEvent = () => {
             </button>
             <p
               data-testid="notification"
-              className={`notification
+              className={`notification-tag-text
             ${notification ? "show" : ""}`}
             >
               {notificationText}

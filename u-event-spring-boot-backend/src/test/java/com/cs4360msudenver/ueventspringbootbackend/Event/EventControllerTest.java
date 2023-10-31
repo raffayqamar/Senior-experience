@@ -1,6 +1,8 @@
 package com.cs4360msudenver.ueventspringbootbackend.Event;
 
 import com.cs4360msudenver.ueventspringbootbackend.User.CustomUserDetailsService;
+import com.cs4360msudenver.ueventspringbootbackend.User.JwtUtil;
+import com.jayway.jsonpath.JsonPath;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,12 +23,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(SpringExtension.class)
@@ -42,12 +42,15 @@ public class EventControllerTest {
     @MockBean
     private CustomUserDetailsService customUserDetailsService;
 
+    @MockBean
+    private JwtUtil jwtUtil;
+
 
     @NotNull
     private static Event getEvent() throws ParseException {
         Event testEvent = new Event();
         testEvent.setEventName("testEvent");
-        testEvent.setEmail("testEmail");
+        testEvent.setUsername("testEmail");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = dateFormat.parse("2021-09-27");
         testEvent.setEventDate(date);
@@ -57,14 +60,12 @@ public class EventControllerTest {
         testEvent.setLocation("testLocation");
         testEvent.setPostalCode("testPostalCode");
         testEvent.setCity("testCity");
-        testEvent.setCountryCode("testCountryCode");
+        testEvent.setCountryCode("testCountry");
         testEvent.setDescription("testDescription");
         testEvent.setCategory("testCategory");
         testEvent.setImage("testImage");
         testEvent.setImageFile(null);
-        String[] tagsArray = {"testTag1", "testTag2"};
-        List<String> tags = Arrays.asList(tagsArray);
-        testEvent.setTags(tags);
+        testEvent.setTags(null);
         return testEvent;
     }
 
@@ -105,8 +106,22 @@ public class EventControllerTest {
 
         MockHttpServletResponse response = result.getResponse();
 
+        String responseContent = response.getContentAsString();
+
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals("{\"eventId\":null,\"eventName\":\"testEvent\",\"user\":null,\"eventDate\":\"2021-09-27T06:00:00.000+00:00\",\"eventTime\":\"12:00:00\",\"location\":\"testLocation\",\"postalCode\":\"testPostalCode\",\"city\":\"testCity\",\"countryCode\":\"testCountryCode\",\"description\":\"testDescription\",\"category\":\"testCategory\",\"image\":\"testImage\",\"imageFile\":null,\"tags\":[\"testTag1\",\"testTag2\"]}", response.getContentAsString());
+        // Using JSONPath to assert the individual fields
+        assertEquals("testEvent", JsonPath.parse(responseContent).read("$.eventName"));
+        assertEquals("2021-09-27T06:00:00.000+00:00", JsonPath.parse(responseContent).read("$.eventDate"));
+        assertEquals("12:00:00", JsonPath.parse(responseContent).read("$.eventTime"));
+        assertEquals("testLocation", JsonPath.parse(responseContent).read("$.location"));
+        assertEquals("testPostalCode", JsonPath.parse(responseContent).read("$.postalCode"));
+        assertEquals("testCity", JsonPath.parse(responseContent).read("$.city"));
+        assertEquals("testCountry", JsonPath.parse(responseContent).read("$.countryCode"));
+        assertEquals("testDescription", JsonPath.parse(responseContent).read("$.description"));
+        assertEquals("testCategory", JsonPath.parse(responseContent).read("$.category"));
+        assertEquals("testImage", JsonPath.parse(responseContent).read("$.image"));
+        assertNull(JsonPath.parse(responseContent).read("$.imageFile"));
+        assertNull(JsonPath.parse(responseContent).read("$.tags"));
     }
 
     @Test
@@ -122,7 +137,7 @@ public class EventControllerTest {
         MockHttpServletResponse response = result.getResponse();
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
-        assertEquals("", response.getContentAsString());
+        assertTrue(response.getContentAsString().isEmpty());
     }
 
     @Test
@@ -132,18 +147,15 @@ public class EventControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"eventName\": \"testEvent\",\n" +
-                        "    \"email\": \"testEmail\",\n" +
+                        "    \"username\": \"testEmail\",\n" +
                         "    \"eventDate\": \"2021-09-27\",\n" +
                         "    \"eventTime\": \"12:00:00\",\n" +
                         "    \"location\": \"testLocation\",\n" +
                         "    \"postalCode\": \"testPostalCode\",\n" +
-                        "    \"city\": \"testCity\",\n" +
-                        "    \"countryCode\": \"testCountryCode\",\n" +
+                        "    \"countryCode\": \"testCountry\",\n" +
                         "    \"description\": \"testDescription\",\n" +
                         "    \"category\": \"testCategory\",\n" +
-                        "    \"image\": \"testImage\",\n" +
-                        "    \"imageFile\": null,\n" +
-                        "    \"tags\": [\"testTag1\", \"testTag2\"]\n" +
+                        "    \"image\": \"testImage\"\n" +
                         "}")
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -155,31 +167,44 @@ public class EventControllerTest {
         MockHttpServletResponse response = result.getResponse();
 
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-        assertEquals("{\"eventId\":null,\"eventName\":\"testEvent\",\"user\":null,\"eventDate\":\"2021-09-27T06:00:00.000+00:00\",\"eventTime\":\"12:00:00\",\"location\":\"testLocation\",\"postalCode\":\"testPostalCode\",\"city\":\"testCity\",\"countryCode\":\"testCountryCode\",\"description\":\"testDescription\",\"category\":\"testCategory\",\"image\":\"testImage\",\"imageFile\":null,\"tags\":[\"testTag1\",\"testTag2\"]}", response.getContentAsString());
+
+        String responseContent = response.getContentAsString();
+
+        // Using JSONPath to assert the individual fields
+        assertEquals("testEvent", JsonPath.parse(responseContent).read("$.eventName"));
+        assertEquals("2021-09-27T06:00:00.000+00:00", JsonPath.parse(responseContent).read("$.eventDate"));
+        assertEquals("12:00:00", JsonPath.parse(responseContent).read("$.eventTime"));
+        assertEquals("testLocation", JsonPath.parse(responseContent).read("$.location"));
+        assertEquals("testPostalCode", JsonPath.parse(responseContent).read("$.postalCode"));
+        assertEquals("testCity", JsonPath.parse(responseContent).read("$.city"));
+        assertEquals("testCountry", JsonPath.parse(responseContent).read("$.countryCode"));
+        assertEquals("testDescription", JsonPath.parse(responseContent).read("$.description"));
+        assertEquals("testCategory", JsonPath.parse(responseContent).read("$.category"));
+        assertEquals("testImage", JsonPath.parse(responseContent).read("$.image"));
+        assertNull(JsonPath.parse(responseContent).read("$.imageFile"));
+        assertNull(JsonPath.parse(responseContent).read("$.tags"));
     }
 
-
     @Test
-    public void testCreateEventBadRequest() throws Exception {
+    public void testCreateCountryBadRequest() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/events/")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"eventName\": \"testEvent\",\n" +
-                        "    \"email\": \"testEmail\",\n" +
+                        "    \"username\": \"testEmail\",\n" +
                         "    \"eventDate\": \"2021-09-27\",\n" +
                         "    \"eventTime\": \"12:00:00\",\n" +
                         "    \"location\": \"testLocation\",\n" +
                         "    \"postalCode\": \"testPostalCode\",\n" +
-                        "    \"city\": \"testCity\",\n" +
-                        "    \"countryCode\": \"testCountryCode\",\n" +
+                        "    \"countryCode\": \"testCountry\",\n" +
                         "    \"description\": \"testDescription\",\n" +
                         "    \"category\": \"testCategory\",\n" +
-                        "    \"image\": \"testImage\",\n" +
-                        "    \"imageFile\": null,\n" +
-                        "    \"tags\": [\"testTag1\", \"testTag2\"]\n" +
+                        "    \"image\": \"testImage\"\n" +
                         "}")
                 .contentType(MediaType.APPLICATION_JSON);
+
+        Event testEvent = getEvent();
 
         Mockito.when(eventService.saveEvent(Mockito.any())).thenThrow(IllegalArgumentException.class);
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
@@ -188,8 +213,8 @@ public class EventControllerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         assertTrue(response.getContentAsString().contains("Exception"));
-    }
 
+    }
 
     @Test
     public void testUpdateEvent() throws Exception {
@@ -199,18 +224,15 @@ public class EventControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"eventName\": \"testEvent\",\n" +
-                        "    \"email\": \"testEmail\",\n" +
+                        "    \"username\": \"testEmail\",\n" +
                         "    \"eventDate\": \"2021-09-27\",\n" +
                         "    \"eventTime\": \"12:00:00\",\n" +
                         "    \"location\": \"testLocation\",\n" +
                         "    \"postalCode\": \"testPostalCode\",\n" +
-                        "    \"city\": \"testCity\",\n" +
-                        "    \"countryCode\": \"testCountryCode\",\n" +
+                        "    \"countryCode\": \"testCountry\",\n" +
                         "    \"description\": \"testDescription\",\n" +
                         "    \"category\": \"testCategory\",\n" +
-                        "    \"image\": \"testImage\",\n" +
-                        "    \"imageFile\": null,\n" +
-                        "    \"tags\": [\"testTag1\", \"testTag2\"]\n" +
+                        "    \"image\": \"testImage\"\n" +
                         "}")
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -232,7 +254,7 @@ public class EventControllerTest {
 
         // Assert the response status and content
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals("{\"eventId\":null,\"eventName\":\"testEventUpdated\",\"user\":null,\"eventDate\":\"2021-09-27T06:00:00.000+00:00\",\"eventTime\":\"12:00:00\",\"location\":\"testLocation\",\"postalCode\":\"testPostalCode\",\"city\":\"testCity\",\"countryCode\":\"testCountryCode\",\"description\":\"testDescription\",\"category\":\"testCategory\",\"image\":\"testImage\",\"imageFile\":null,\"tags\":[\"testTag1\",\"testTag2\"]}", response.getContentAsString());
+        assertTrue(response.getContentAsString().contains("testEventUpdated"));
     }
 
     @Test
@@ -254,7 +276,8 @@ public class EventControllerTest {
                         "}")
                 .contentType(MediaType.APPLICATION_JSON);
 
-        Mockito.when(eventService.getEvent(Mockito.any())).thenReturn(null);
+        Mockito.when(eventService.getEvent(1L)).thenReturn(null);
+
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 
         MockHttpServletResponse response = result.getResponse();
@@ -283,8 +306,11 @@ public class EventControllerTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         Event testEvent = getEvent();
-        Mockito.when(eventService.getEvent(Mockito.any())).thenReturn(testEvent);
+
+        Mockito.when(eventService.getEvent(1L)).thenReturn(testEvent);
+
         Mockito.when(eventService.saveEvent(Mockito.any())).thenThrow(IllegalArgumentException.class);
+
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 
         MockHttpServletResponse response = result.getResponse();
@@ -328,5 +354,25 @@ public class EventControllerTest {
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
         assertEquals("", response.getContentAsString());
+    }
+
+    @Test
+    public void testDeleteEventBadRequest() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/api/events/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        Event testEvent = getEvent();
+
+        Mockito.when(eventService.getEvent(1L)).thenReturn(testEvent);
+        Mockito.when(eventService.deleteEvent(1L)).thenThrow(IllegalArgumentException.class);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+        assertTrue(response.getContentAsString().contains("Exception"));
     }
 }

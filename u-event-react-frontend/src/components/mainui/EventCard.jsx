@@ -15,12 +15,19 @@ const EventCard = ({
   description,
   category,
   image,
-  imageFile,
   user: { firstName, lastName },
   tags,
   backgroundImage,
 }) => {
   // console.log("backgroundImage: ", backgroundImage);
+
+  const eventDateFormatted = eventDate
+    ? new Date(eventDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : null;
 
   return (
     <article
@@ -29,7 +36,6 @@ const EventCard = ({
         width: width + "px",
         height: height + "px",
         fontSize: fontSize + "px",
-        // Use backgroundImage as the background image
         backgroundImage: `linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,.1)), url(${
           backgroundImage ? backgroundImage : image
         })`,
@@ -58,41 +64,26 @@ const EventCard = ({
           Category: {category}
         </p>
         <p>
-          Date: {/* check if date is null */}
-          {eventDate
-            ? new Date(eventDate).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })
-            : null}
-          {
-            // time
-            eventTime ? `${" | " + eventTime}` : null
-          }
+          Date: {eventDateFormatted}
+          {eventTime && ` | ${eventTime}`}
         </p>
         <p>
           Location: {`${location ? location + ", " : ""}${city} ${postalCode}`}
         </p>
-        {/* <p>Duration: {duration} hours</p> */}
         <p className="event-details">
           <span className="event-details-header">Event Details:</span> <br />{" "}
           <span className="event-details-text">{description}</span>
         </p>
         <div className="event-tags">
-          {tags.map((tag, index) => {
-            return (
-              <p className="event-tag" key={index}>
-                {tag}
-              </p>
-            );
-          })}
+          {tags.map((tag, index) => (
+            <p className="event-tag" key={index}>{`#${tag}`}</p>
+          ))}
         </div>
         <div className="attend-block">
           <button className="attend-btn">Attend</button>
           <div className="contact-details">
             <p>User: {`${firstName} ${lastName}`}</p>
-            <p>Memeber Since: {2023}</p>
+            <p>Member Since: {2023}</p>
           </div>
         </div>
       </div>

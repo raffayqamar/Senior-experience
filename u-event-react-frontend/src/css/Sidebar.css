@@ -2,9 +2,14 @@
   --font-family: System-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   /* --primary-brand-color: #ac4bf9; */
-  --primary-brand-color: linear-gradient(
+  /* --primary-brand-color: linear-gradient(
     180deg,
     rgba(172, 75, 249, 0.9) 0%,
+    rgba(0, 0, 0, 1) 100%
+  ); */
+  --primary-brand-color: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.9) 0%,
     rgba(0, 0, 0, 1) 100%
   );
   --primary-transition: all 0.2s ease-in-out;
@@ -29,7 +34,10 @@ a {
   min-width: 300px;
   height: 90vh;
   transition: var(--primary-transition);
-  position: relative;
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translate(0, -50%);
   z-index: inherit;
   overflow: hidden;
 }
@@ -162,6 +170,8 @@ a {
   transition: all 0.25s ease-in-out;
   cursor: pointer;
   filter: invert(1);
+  stroke-width: 1px;
+  stroke: #ffffff;
   animation: grow 3s ease-in-out infinite;
 }
 
@@ -193,69 +203,107 @@ a {
 .sidebar .hosted-section {
   padding: 0;
 }
-.sidebar .hide-sidebar-btn {
-  position: absolute;
-  right: 0;
-  top: 0;
-  padding: 1rem;
-  border-radius: 0px 0px 0px 10px;
-  transition: var(--primary-transition);
 
-  /* Temp Remove Button */
+.sidebar-component-wrapper {
+  width: 0;
+}
+
+.sidebar .create-event-btn {
+  max-width: 40px;
+  margin: 1rem 0;
+}
+
+.sidebar {
+  background: var(--primary-brand-color);
+  min-width: 100px;
+}
+
+/* TOGGLE */
+.burger-toggle {
+  font-size: 30px;
+  margin-top: 0.5rem;
   display: none;
+}
+.burger-toggle:hover {
+  color: wheat;
+  animation: grow 3s ease-in-out infinite;
+}
+@keyframes grow {
+  0% {
+    transform: scale(0.98);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(0.98);
+  }
 }
 .sidebar-wrapper.hide {
   margin-right: 3rem;
   width: 50px;
   z-index: 100;
 }
-.sidebar-component-wrapper {
-  width: 0;
+
+@media (max-width: 800px) {
+  .sidebar-wrapper.hide {
+    margin-right: 0rem;
+  }
+  .sidebar-logo {
+    display: none;
+  }
+  .sidebar {
+    height: 50px;
+    position: fixed;
+    top: 25px;
+    background: #000000;
+    color: #fff;
+    width: 100%;
+    box-shadow: none;
+    text-align: left;
+    border-radius: 0;
+    z-index: 9999;
+  }
+  .burger-toggle {
+    margin-left: 1rem;
+    display: block;
+  }
+  .sidebar .pill {
+    display: none;
+  }
+  .burger-toggle.hide {
+    background: red;
+    height: 100vh;
+    display: block;
+    z-index: 9999;
+  }
+  .sidebar.show {
+    height: 100vh;
+    left: 0;
+    top: 0;
+    transform: translate(0, 0px);
+  }
+  .sidebar.show .pill {
+    display: block;
+  }
+  .sidebar.show .create-event {
+    display: block;
+    text-align: center;
+    margin: auto;
+  }
+  .sidebar.show .create-event-btn {
+    display: inline-block;
+  }
+  .nav-section::before,
+  .hosted-section::before {
+    background: #fff;
+  }
 }
 
-/* HIDE ELEMENTS ON COLLAPSE */
-.sidebar.hide .sidebar-logo {
-  font-size: 35px;
-  margin-bottom: 1rem;
-}
-
-.sidebar.hide .nav-section .nav.pill {
-  width: auto;
-  margin: auto;
-  margin-top: 1rem;
-}
-.sidebar.hide .create-event-btn {
-  max-width: 40px;
-  margin: 1rem 0;
-}
-
-.sidebar.hide .link-text {
-  /* opacity: 0;
-  display: none; */
-}
-.sidebar.hide p.create-event-text {
-  /* opacity: 0;
-  display: none; */
-}
-.sidebar.hide .sidebar-interests {
-  opacity: 0;
-  display: none;
-}
-.sidebar.hide .sidebar-sub-text {
-  opacity: 0;
-  display: none;
-  font-size: 16px;
-}
-.sidebar.hide {
-  background: var(--primary-brand-color);
-  min-width: 100px;
-}
-
-.sidebar .hide-sidebar-btn.hide {
-  position: absolute;
-  right: 0;
-  padding: 1rem;
-  border-radius: 0px;
-  top: 0;
-  transition: var(--primary-transition);
+/* TOGGLE */
+@media (max-width: 450px) {
+  .sidebar-component-wrapper {
+    position: absolute;
+    width: 0;
+  }
 }
