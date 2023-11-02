@@ -1,6 +1,11 @@
 import React from "react";
+import { Link, Params } from "react-router-dom";
 import "../../css/EventDetails.css";
 import { AvatarImage } from "../commonElements";
+import "../../css/EventDetails.css";
+
+// Use the useLocation hook to get the event object passed from the EventCard component
+import { useLocation } from "react-router-dom";
 
 // TODO-Complete: Separate EventPrompt component
 const EventPrompt = ({ eventName, userName }) => {
@@ -58,19 +63,30 @@ const TagComponent = ({ tags }) => {
 };
 
 // TODO-Complete: Main EventDetails component + subcomponents
-const EventDetails = ({
-  eventName,
-  user: { firstName, lastName },
-  eventDate,
-  location,
-  description,
-  image,
-  tags,
-}) => {
+const EventDetails = () => {
+  // The useLocation hook returns the event object passed from the EventCard component from the EventCard component
+  const loc = useLocation();
+  const { event } = loc.state; // Destructure the event object from the location object
+
+  const {
+    eventId,
+    attendees,
+    eventName,
+    user: { firstName, lastName },
+    eventDate,
+    location,
+    description,
+    image,
+    tags,
+  } = event;
+
   const userName = `${firstName} ${lastName}`;
 
   return (
     <section className="event-detail">
+      <Link to="/" className="btn back-btn">
+        {"\u2190 Event Board"}
+      </Link>
       <div className="event-card-container">
         {/* EVENT CARD */}
         <article
@@ -96,7 +112,9 @@ const EventDetails = ({
             alt="avatarImage"
             className="event-details-avatar"
           />
-          <p className="attending-tag match-tag">Attending ({"80"})</p>
+          <p className="attending-tag match-tag">
+            Attending ({attendees.length})
+          </p>
           <div className="card-content">
             <h2 className="card-title">{eventName}</h2>
             <p>Host: {userName}</p>
@@ -130,6 +148,7 @@ const EventDetails = ({
             label="Join"
             onClick={() => {
               /* TODO: Setup handle joining events!! */
+              // console.log("Joining Event " + eventId);
             }}
           />
         </div>

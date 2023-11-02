@@ -1,6 +1,7 @@
 package com.cs4360msudenver.ueventspringbootbackend.Event;
 
 
+import com.cs4360msudenver.ueventspringbootbackend.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,6 @@ public class EventService {
         return false;
     }
 
+    // -------------------ADD Attendees------------------------------
 
 }

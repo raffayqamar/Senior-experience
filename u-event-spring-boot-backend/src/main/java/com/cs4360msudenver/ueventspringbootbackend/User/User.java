@@ -2,6 +2,8 @@ package com.cs4360msudenver.ueventspringbootbackend.User;
 
 import javax.persistence.*;
 
+import com.cs4360msudenver.ueventspringbootbackend.Event.Event;
+import com.cs4360msudenver.ueventspringbootbackend.Interests.Interests;
 import com.cs4360msudenver.ueventspringbootbackend.image.Image;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -13,9 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 
 @Entity
@@ -93,6 +93,16 @@ public class User implements UserDetails {
     //    For OAuth2 (Google and Facebook, etc.)
     @Enumerated(EnumType.STRING)
     private ProviderEnum provider;
+
+    // Create a list of events that the user is attending
+    @ManyToMany
+    @Column(name = "attending_events")
+    private Set<Event> events;
+
+    // Create a list of events that the user is attending
+    @ManyToMany
+    @Column(name = "user_interests")
+    private Set<Interests> interests;
 
 
 

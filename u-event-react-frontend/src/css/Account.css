@@ -23,6 +23,7 @@
 .grid-content {
   height: 100%;
   width: 100%;
+  transition: var(--base-transition); /* Smooth expand/collapse animation */
 }
 
 .user-profile-container {
@@ -202,42 +203,6 @@
   margin: 5px 10px 0 10px;
 }
 
-/* RESPONSIVENESS (MEDIA QUERIES) */
-@media (max-width: 1440px) {
-  .user-details-card.edit {
-    height: 500px;
-  }
-  .user-details-card {
-    height: 800px;
-    width: 100%;
-    transition: var(--base-transition); /* Smooth expand/collapse animation */
-  }
-  .user-profile-card {
-    width: 100%;
-  }
-  .user-profile-container {
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-    /* TOP LEFT BOTTOM RIGHT */
-    padding: 2rem 2rem 0rem 2rem;
-    height: 100%;
-  }
-  .user-details-card-body-content-text {
-    height: 100% !important;
-  }
-  .user-details-container.edit {
-    transition: var(--base-transition); /* Smooth expand/collapse animation */
-  }
-  .user-profile-lower-container {
-    flex-direction: column;
-    height: 100%;
-  }
-  .events-card {
-    padding-bottom: 2rem;
-  }
-}
-
 /* User Image */
 .image-profile-container {
   position: relative;
@@ -289,4 +254,45 @@
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+}
+
+/* RESPONSIVENESS (MEDIA QUERIES) */
+@media (max-width: 1440px) {
+  .user-details-card.edit {
+    height: 500px;
+  }
+  .user-details-card {
+    height: 800px;
+    width: 100%;
+    transition: var(--base-transition); /* Smooth expand/collapse animation */
+  }
+  .user-profile-card {
+    width: 100%;
+  }
+  .user-profile-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    /* TOP LEFT BOTTOM RIGHT */
+    padding: 2rem 2rem 0rem 2rem;
+    height: 100%;
+  }
+  .user-details-card-body-content-text {
+    height: 100% !important;
+  }
+  .user-details-container.edit {
+    transition: var(--base-transition); /* Smooth expand/collapse animation */
+  }
+  .user-profile-lower-container {
+    flex-direction: column;
+    height: 100%;
+  }
+  .events-card {
+    padding-bottom: 2rem;
+  }
+}
+@media (max-width: 800px) {
+  .grid-content {
+    margin-top: 3.5rem;
+  }
 }

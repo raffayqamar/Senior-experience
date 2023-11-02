@@ -5,4 +5,3 @@ public class CustomImageUploadException extends Exception {
         super(message);
     }
 }
-//

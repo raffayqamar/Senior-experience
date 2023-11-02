@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import EventCard from "./EventCard";
 import "../../css/EventBoard.css";
 import "../../css/EventCard.css";
-import "../../css/EventDetails.css";
-import EventDetails from "./EventDetails";
 import rectImageOne from "../../assets/right-rect-1.svg";
 import feedIcon from "../../assets/feed-icon.svg";
 
@@ -65,7 +63,6 @@ const EventBoard = () => {
           <Link to="/event-map" className="event-board-map">
             View Map
           </Link>
-
           <div className="event-board-filter">
             {/* Filter Feature */}
             <p>Filter By</p>
@@ -84,64 +81,42 @@ const EventBoard = () => {
           </div>
         </div>
       </div>
-      {selectedEvent ? (
-        <div
-          className="event-details-content"
-          style={{
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center center",
-            backgroundSize: "cover",
-            width: "100%",
-            // height: "calc(100vh - 8vh)",
-            height: "100%",
-            paddingBottom: "3rem",
-            position: "relative",
-          }}
-        >
-          <button
-            className="btn back-btn"
-            onClick={() => {
-              backBtnClicked(false);
-              setSelectedEvent(null);
-            }}
-          >
-            {"\u2190 Event Board"}
-          </button>
-          <EventDetails {...selectedEvent} />
-        </div>
-      ) : (
-        <div className="event-board-top">
-          <div className="event-board-events">
-            {filter === "all"
-              ? data.map((event) => {
-                  return (
-                    <div
-                      className="event-board-event"
-                      key={event.eventId}
-                      onClick={() => handleEventClick(event)}
-                    >
-                      <div className="zoom-effect">
-                        <EventCard {...event} height={600} />
-                      </div>
+
+      <div className="event-board-top">
+        <div className="event-board-events">
+          {filter === "all"
+            ? data.map((event) => {
+                {
+                  console.log("data: ", event);
+                }
+                return (
+                  <Link
+                    to="/event-details"
+                    state={{ event }}
+                    key={event.eventId}
+                    className="event-board-event"
+                  >
+                    <div className="zoom-effect">
+                      <EventCard {...event} height={600} />
                     </div>
-                  );
-                })
-              : filteredData.map((event) => {
-                  return (
-                    <div
-                      className="event-board-event"
-                      key={event.eventId}
-                      onClick={() => handleEventClick(event)}
-                    >
-                      <div className="zoom-effect">
-                        <EventCard {...event} height={600} />
-                      </div>
+                  </Link>
+                );
+              })
+            : filteredData.map((event) => {
+                return (
+                  <div
+                    className="event-board-event"
+                    key={event.eventId}
+                    onClick={() => handleEventClick(event)}
+                  >
+                    <div className="zoom-effect">
+                      <EventCard {...event} height={600} />
                     </div>
-                  );
-                })}
-          </div>
+                  </div>
+                );
+              })}
         </div>
-      )}
+      </div>
     </section>
   );
 };

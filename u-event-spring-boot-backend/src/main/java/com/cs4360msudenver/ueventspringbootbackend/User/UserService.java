@@ -1,5 +1,7 @@
 package com.cs4360msudenver.ueventspringbootbackend.User;
 
+import com.cs4360msudenver.ueventspringbootbackend.Event.Event;
+import com.cs4360msudenver.ueventspringbootbackend.Event.EventRepository;
 import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @PersistenceContext
     protected EntityManager entityManager;
@@ -71,7 +76,7 @@ public class UserService {
         return false;
     }
 
-//    PASSWORD ENCODING
+    //    PASSWORD ENCODING
     public User createUser(User user) {
 
         UserDetails userDetails = user;
@@ -80,4 +85,7 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    // -------------------ADD Attendees---------------------------------------------
+
 }

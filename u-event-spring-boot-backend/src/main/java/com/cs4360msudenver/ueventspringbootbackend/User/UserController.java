@@ -1,11 +1,14 @@
 package com.cs4360msudenver.ueventspringbootbackend.User;
 
+import com.cs4360msudenver.ueventspringbootbackend.Event.Event;
+import com.cs4360msudenver.ueventspringbootbackend.Event.EventService;
+import com.cs4360msudenver.ueventspringbootbackend.Interests.InterestService;
+import com.cs4360msudenver.ueventspringbootbackend.Interests.Interests;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +21,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private InterestService interestService;
 
     // Add custom user details service for authentication and authorization
     @Autowired
@@ -167,15 +176,62 @@ public class UserController {
         User user = userService.getUserByEmail(checkUser.getUsername());
 
         try {
-            if(userService.deleteUser(user.getUserId())){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (userService.deleteUser(user.getUserId())) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    // Request for managing user's events
+    @PostMapping("/{username}/events/{eventId}")
+    public ResponseEntity<String> signupForEvent(@PathVariable String username, @PathVariable Long eventId) {
+        UserDetails checkUser = userDetailsService.loadUserByUsername(username);
+        User user = userService.getUserByEmail(checkUser.getUsername());
+        Event event = eventService.getEvent(eventId);
+
+        try {
+            // append the event id to the user's attending events list
+            user.getEvents().add(event);
+            userService.saveUser(user);
+
+            // append the username to the event's attendees list
+            event.getAttendees().add(username);
+            eventService.saveEvent(event);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(ExceptionUtils.getStackTrace(e), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>("User " + user.getUsername() + " signed up for event " + event.getEventName(), HttpStatus.OK);
+    }
+
+    // Request for managing user's events
+    @PostMapping("/{username}/interests/{interests}")
+    public ResponseEntity<String> selectedInterests(@PathVariable String username, @PathVariable Long interestId) {
+        UserDetails checkUser = userDetailsService.loadUserByUsername(username);
+        User user = userService.getUserByEmail(checkUser.getUsername());
+        Interests interests1 = interestService.getInterest(interestId);
+
+        try {
+            // append the event id to the user's attending events list
+            user.getInterests().add(interests1);
+            userService.saveUser(user);
+
+            // append the username to the event's attendees list
+            interests1.getUsers().add(username);
+            interestService.saveInterest(interests1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(ExceptionUtils.getStackTrace(e), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>("User " + user.getUsername() + " has selected interest: " + interests1.getInterest(), HttpStatus.OK);
     }
 
 }

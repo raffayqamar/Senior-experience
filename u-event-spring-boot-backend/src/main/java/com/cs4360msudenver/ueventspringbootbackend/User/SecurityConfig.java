@@ -45,13 +45,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/users/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/events/**").permitAll()
-                .antMatchers(HttpMethod.PUT, "/api/events/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/events/**").permitAll()
+                .antMatchers(HttpMethod.PUT, "/api/events/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/events/**").permitAll()
                 .antMatchers(HttpMethod.PUT, "/api/users/**").permitAll()
+                .antMatchers(HttpMethod.PUT, "/api/events/**").permitAll()
 //                IMAGES UPLOAD + DISPLAY
                 .antMatchers(HttpMethod.POST, "/images/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/images/uploadImage/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/images/**").permitAll()
+
 //                END OF IMAGES UPLOAD + DISPLAY
 //                .anyRequest().authenticated() // Require authentication for any endpoint that's not specified above
                 .and().sessionManagement()

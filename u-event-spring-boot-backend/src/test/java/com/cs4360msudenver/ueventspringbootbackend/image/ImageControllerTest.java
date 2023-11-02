@@ -4,9 +4,11 @@ import com.cs4360msudenver.ueventspringbootbackend.User.CustomUserDetailsService
 import com.cs4360msudenver.ueventspringbootbackend.User.JwtUtil;
 import com.cs4360msudenver.ueventspringbootbackend.User.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,6 +29,7 @@ import java.text.ParseException;
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -193,20 +196,100 @@ public class ImageControllerTest {
      * */
     @Test
     public void testDeleteImage() throws Exception {
-        Image testImage = getImage();
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/images/deleteImage/95")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON);
-        when(imageService.getImageById(testImage.getId())).thenReturn(testImage);
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isNoContent())
-                .andExpect(MockMvcResultMatchers.content().string(""));
+        Image testImage = getImage();
+
+        Mockito.when(imageService.getImageById(95L)).thenReturn(testImage);
+        Mockito.when(imageService.deleteImage(95L)).thenReturn(true);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
         MockHttpServletResponse response = result.getResponse();
-        assertEquals(95L, testImage.getId().longValue());
-        assertEquals(HttpStatus.NO_CONTENT.value(),response.getStatus());
+
+        Assertions.assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus()); // Changed from HttpStatus.OK to HttpStatus.NO_CONTENT
+        Assertions.assertEquals("", response.getContentAsString());
+
+    }
+
+    @Test
+    public void testDeleteImageBadRequest() throws Exception {
+        // Assuming '/images/deleteImage/{id}' is the correct URL for deleting an image
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/images/deleteImage/999") // Adjusted URL pattern
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        Mockito.when(imageService.getImageById(getImage().getId())).thenReturn(getImage());
+        // Assuming the deleteImage method in the service throws IllegalArgumentException for bad requests
+        Mockito.when(imageService.deleteImage(999L)).thenThrow(IllegalArgumentException.class);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+        assertTrue(response.getContentAsString().contains("Exception"));
+    }
+
+    @Test
+    public void testDeleteImageNotFound() throws Exception {
+        Image testImageNotFound = new Image();
+        testImageNotFound.setId(999L);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/images/deleteImage/" + testImageNotFound.getId()) // Adjusted URL pattern
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        Mockito.when(imageService.getImageById(testImageNotFound.getId())).thenReturn(null);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+        assertEquals("", response.getContentAsString());
+
+    }
+
+    @Test
+    public void testGetImageIdByUsernameNotFound() throws Exception {
+        String username = "someUser";
+
+        when(imageService.findIdsByUsername(username)).thenReturn(Collections.emptyList());
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/image/" + username) // Corrected URL to match controller
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+    }
+
+    @Test
+    public void testGetImageIdByUsernameBadRequest() throws Exception {
+        Image testImage = getImage();
+        User invalidUsername = new User();
+        invalidUsername.setUsername("someUser");
+        testImage.getUsername();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/images/image/" + invalidUsername)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+       Mockito.when(imageService.findIdsByUsername(invalidUsername.getUsername())).thenThrow(IllegalArgumentException.class);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+
+        // Assert that the response status is 400 Bad Request
+        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
     }
 }

@@ -2,6 +2,7 @@ package com.cs4360msudenver.ueventspringbootbackend.Event;
 
 import com.cs4360msudenver.ueventspringbootbackend.User.CustomUserDetailsService;
 import com.cs4360msudenver.ueventspringbootbackend.User.JwtUtil;
+import com.cs4360msudenver.ueventspringbootbackend.User.UserService;
 import com.jayway.jsonpath.JsonPath;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +41,9 @@ public class EventControllerTest {
     private EventService eventService;
 
     @MockBean
+    private UserService userService;
+
+    @MockBean
     private CustomUserDetailsService customUserDetailsService;
 
     @MockBean
@@ -66,6 +70,7 @@ public class EventControllerTest {
         testEvent.setImage("testImage");
         testEvent.setImageFile(null);
         testEvent.setTags(null);
+        testEvent.setAttendees(null);
         return testEvent;
     }
 
@@ -220,7 +225,7 @@ public class EventControllerTest {
     public void testUpdateEvent() throws Exception {
         // Build the request
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/events/1")
+                .put("/api/events/update/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"eventName\": \"testEvent\",\n" +
@@ -260,7 +265,7 @@ public class EventControllerTest {
     @Test
     public void testUpdateEventNotFound() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/events/1")
+                .put("/api/events/update/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"eventName\": \"testEvent\",\n" +
@@ -289,7 +294,7 @@ public class EventControllerTest {
     @Test
     public void testUpdateEventBadRequest() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/events/1")
+                .put("/api/events/update/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"eventName\": \"testEvent\",\n" +

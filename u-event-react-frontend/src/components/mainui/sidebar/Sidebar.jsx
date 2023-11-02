@@ -17,13 +17,15 @@ const Sidebar = () => {
     setHideSidebar(!hideSidebar);
   };
   return (
-    <div className={`sidebar-wrapper ${hideSidebar ? "show" : "hide"}`}>
+    <div className={`sidebar-wrapper ${hideSidebar ? "show" : "hide"}`}
+    data-testid="sidebar-wrapper">
       <div className="sidebar-component-fill"></div>
 
       <div className={`sidebar ${hideSidebar ? "show" : ""}`}>
         <FontAwesomeIcon
           icon={faBurger}
           className={`burger-toggle`}
+          data-testid="burger-toggle"
           onClick={(e) => {
             handleEventClick(e);
           }}

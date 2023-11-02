@@ -1,6 +1,8 @@
 package com.cs4360msudenver.ueventspringbootbackend.User;
 
 
+import com.cs4360msudenver.ueventspringbootbackend.Event.EventService;
+import com.cs4360msudenver.ueventspringbootbackend.Interests.InterestService;
 import com.jayway.jsonpath.JsonPath;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,11 @@ public class UserControllerTest {
     private UserService userService;
     @MockBean
     private CustomUserDetailsService customUserDetailsService;
+    @MockBean
+    private EventService eventService;
+    @MockBean
+    private InterestService interestService;
+
     @MockBean
     private JwtUtil jwtUtil;
 

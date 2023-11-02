@@ -5,6 +5,7 @@ import { AvatarImage } from "../commonElements";
 const EventCard = ({
   width,
   height,
+  attendees,
   fontSize,
   eventName,
   eventDate,
@@ -54,6 +55,9 @@ const EventCard = ({
         }}
       >
         <h2 className="card-title">{eventName}</h2>
+        <p className="attending-tag-event-card match-tag">
+          Attending ({attendees ? attendees.length : ""})
+        </p>
         <p>Host: {`${firstName} ${lastName}`}</p>
         <p
           className="category"

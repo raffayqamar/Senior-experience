@@ -1,8 +1,10 @@
 package com.cs4360msudenver.ueventspringbootbackend.User;
 
+import com.cs4360msudenver.ueventspringbootbackend.Event.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,6 +28,9 @@ public class UserServiceTest {
 
     @MockBean
     private EntityManagerFactory entityManagerFactory;
+
+    @MockBean
+    private EventRepository eventRepository;
 
     @MockBean
     private EntityManager entityManager;

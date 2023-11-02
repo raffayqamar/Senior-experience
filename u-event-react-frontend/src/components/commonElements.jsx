@@ -31,7 +31,7 @@ export const linkContent = [
     imageIcon: dashboardIcon,
     imageAltText: "messages icon",
     pClass: "link-text",
-    pText: "Messages",
+    pText: "Dashboard",
     linkIconHeight: 20,
   },
   {
@@ -42,7 +42,7 @@ export const linkContent = [
     imageIcon: messagesIcon,
     imageAltText: "dashboard icon",
     pClass: "link-text",
-    pText: "Dashboard",
+    pText: "Messages",
     linkIconHeight: 20,
   },
   {
@@ -53,7 +53,19 @@ export const linkContent = [
     imageIcon: calendarIcon,
     imageAltText: "calendar icon",
     pClass: "link-text",
-    pText: "calendar",
+    pText: "Calendar",
+    linkIconHeight: 25,
+  },
+
+  {
+    linkTo: "/manage-events",
+    linkClass: "pill nav",
+    divOneClass: "sidebar-icon-container",
+    imageClass: "sidebar-icons",
+    imageIcon: "",
+    imageAltText: "",
+    pClass: "link-text",
+    pText: "Manage",
     linkIconHeight: 25,
   },
 ];

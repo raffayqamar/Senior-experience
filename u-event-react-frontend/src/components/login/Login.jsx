@@ -67,7 +67,7 @@ const Login = () => {
   //     });
   // };
 
-  const handleSubmit = async (e) => {
+  const handlesubmit = async (e) => {
     e.preventDefault();
 
     // Create a FormData object
@@ -141,7 +141,7 @@ const Login = () => {
             <form
               className="login-form"
               data-testid="login-form"
-              onSubmit={handleSubmit}
+              onSubmit={handlesubmit}
             >
               <h2 className="brand-logo">U-Event</h2>
               <label htmlFor="email"> E-mail </label>

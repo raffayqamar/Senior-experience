@@ -5,8 +5,7 @@ import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import loginimage from "../../assets/ugur-arpaci-U18V0ToioFU-unsplash.jpg";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 
 const Account = () => {
   // Initial profile picture URL
@@ -26,11 +25,11 @@ const Account = () => {
   const handleLogout = () => {
     // Clear user session or perform any other logout logic here
     localStorage.clear(); // Example: Clearing local storage
-  
+
     // Redirect user to the login page or any other page
-    navigate('/login'); // Update the path as per your routing setup
+    navigate("/login"); // Update the path as per your routing setup
   };
-  
+
   /** User Details Card */
   // // to change each individual fiels when user makes a change on details card
 
@@ -520,10 +519,9 @@ const Account = () => {
       </div>
       <div className="logout-button-container">
         <button onClick={handleLogout} className="logout-button">
-        Logout
+          Logout
         </button>
-</div>
-
+      </div>
     </div>
   );
 };

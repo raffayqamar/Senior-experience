@@ -12,6 +12,7 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -73,4 +74,7 @@ public class Event {
     //    Tags Added
     @ElementCollection
     private List<String> tags;
+
+    @ElementCollection
+    private Set<String> attendees;
 }

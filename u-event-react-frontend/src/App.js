@@ -1,5 +1,5 @@
 import React from "react";
-import MainUI from "../src/components/mainui/MainUI";
+import MainUI from "./components/mainui/MainUI";
 import Sidebar from "./components/mainui/sidebar/Sidebar";
 
 import Account from "./components/Account/Account";
